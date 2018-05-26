@@ -55,9 +55,9 @@ object DebugMacros extends DebugMacros {
     }
 
     // Inserting ", " between trees, and a println at the end.
-    val separators = (1 to trees.size-1).map(_ => (reify { print(", ") }).tree) :+ (reify { println() }).tree
+    val separators = trees.init.map(_ => reify { print(", ") }.tree) :+ reify { println() }.tree
     val treesWithSeparators = trees.zip(separators).flatMap(p => List(p._1, p._2))
 
-    c.Expr[Unit](Block(treesWithSeparators.toList, Literal(Constant(()))))
+    c.Expr[Unit](q"{..$treesWithSeparators}")
   }
 }
